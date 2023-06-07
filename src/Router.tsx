@@ -3,7 +3,7 @@ import App from "./App";
 import Coins from "./routes/Coins";
 import Coin from "./routes/Coin";
 import Price from "./routes/Price";
-import Chart from "./routes/Chart";
+import WorthChart from "./routes/Chart";
 
 export const Router = createBrowserRouter([
   {
@@ -24,7 +24,7 @@ export const Router = createBrowserRouter([
           },
           {
             path: "chart",
-            element: <Chart />,
+            element: <WorthChart />,
           },
         ],
       },

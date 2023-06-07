@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import { useLocation, useParams, Outlet } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useMatch } from "react-router-dom";
 import { styled } from "styled-components";
 import { fetchCoinInfo, fetchCoinTickers } from "./api";
 const Container = styled.div`
@@ -47,9 +47,25 @@ const Loader = styled.span`
   display: block;
 `;
 
-interface RouteParams {
-  coinId: string;
-}
+const BtnWrap = styled.div`
+  margin-top: 20px;
+  margin-bottom: 50px;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+`;
+const Btn = styled.div<{ isActive: boolean }>`
+  color: ${(props) =>
+    props.isActive ? props.theme.accentColor : props.theme.textColor};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  width: 100%;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+`;
 
 interface RouteState {
   state: { name: string };
@@ -110,9 +126,7 @@ interface IPriceData {
     };
   };
 }
-interface IcoinId {
-  coinId: string;
-}
+
 const Coin = () => {
   const { coinId } = useParams();
   const { state } = useLocation() as RouteState;
@@ -126,6 +140,8 @@ const Coin = () => {
     () => fetchCoinTickers(coinId!)
   );
   const loading = infoLoading || tickersLoading;
+  const priceMatch = useMatch("/:coinId/price");
+  const chartMatch = useMatch("/:coinId/chart");
   // const [info, setInfo] = useState<IInfoData>();
   // const [price, setPrice] = useState<IPriceData>();
   // useEffect(() => {
@@ -179,8 +195,14 @@ const Coin = () => {
               <span>{tickersData?.max_supply}</span>
             </OverviewItem>
           </Overview>
-          <Link to="chart">차트</Link>
-          <Link to="price">가격</Link>
+          <BtnWrap>
+            <Btn isActive={chartMatch !== null}>
+              <Link to="chart">차트</Link>
+            </Btn>
+            <Btn isActive={priceMatch !== null}>
+              <Link to="price">가격</Link>
+            </Btn>
+          </BtnWrap>
           <Outlet context={{ coinId: coinId }} />
         </>
       )}
